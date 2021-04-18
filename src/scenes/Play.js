@@ -7,8 +7,8 @@ class Play extends Phaser.Scene {
     //Preloads sprites
     preload(){
         this.load.image('background', 'assets/background.png');
+        this.load.image('endgoal', 'assets/endgoal.png');
         this.load.image('rocket', 'assets/rocket.png');
-        //this.load.image('spaceship', 'assets/spaceship.png');
         this.load.image('enemyfile', 'assets/enemyfile.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
@@ -16,6 +16,8 @@ class Play extends Phaser.Scene {
     create(){
         //Background sprite
         this.background = this.add.tileSprite(0,0,640,480, 'background').setOrigin(0,0);
+        //Endgoal sprite
+        this.endgoal = this.add.tileSprite(0,0,64,480, 'endgoal').setOrigin(0,0);
         //Rocket sprite
         this.p1Rocket = new Rocket(this, game.config.width/2, 431, 'rocket').setOrigin(0.5, 0);
         //Spaceship creation
@@ -34,7 +36,7 @@ class Play extends Phaser.Scene {
         //Game borders
         //this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
 	    //this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
-	    this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFF0000).setOrigin(0 ,0);
+	    //this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFF0000).setOrigin(0 ,0);
 	    //this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFF0000).setOrigin(0 ,0);
         
        
