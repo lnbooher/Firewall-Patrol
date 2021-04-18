@@ -13,6 +13,9 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
 
         this.load.audio('bgmusic', ['assets/bgmusic.wav']);//Background music
+        this.load.audio('backgroundTyping', ['assets/backgroundTyping.wav']);
+        this.load.audio('doubleClick', ['assets/doubleClick.wav']);
+        this.load.audio('singleClick', ['assets/singleClick.wav']);
     }
 
     //Create Function
@@ -32,7 +35,7 @@ class Play extends Phaser.Scene {
         this.backgroundMusic = this.sound.add('bgmusic');
         var musicConfig = {
             mute: false,
-            volume: 1,
+            volume: .5,
             rate: 1,
             detune: 0,
             seek: 0,
@@ -40,7 +43,22 @@ class Play extends Phaser.Scene {
             delay: 0
         }
         this.backgroundMusic.play(musicConfig);//Starts the music
+
+        //Typing
+        this.bgtyping = this.sound.add('backgroundTyping');
+        var typingConfig = {
+            mute: false,
+            volume: .5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.bgtyping.play(typingConfig);//Starts the typing
         
+        
+
         //Game borders
         //this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
 	    //this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
@@ -91,6 +109,7 @@ class Play extends Phaser.Scene {
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.backgroundMusic.stop(musicConfig);//Ends music loop on GAME OVER
+            this.bgtyping.stop(typingConfig);//Ends typing loop
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, '(R) to Restart', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
