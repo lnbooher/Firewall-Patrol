@@ -11,19 +11,36 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', 'assets/rocket.png');
         this.load.image('enemyfile', 'assets/enemyfile.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+
+        this.load.audio('bgmusic', ['assets/bgmusic.wav']);//Background music
     }
 
+    //Create Function
     create(){
         //Background sprite
         this.background = this.add.tileSprite(0,0,640,480, 'background').setOrigin(0,0);
         //Endgoal sprite
-        this.endgoal = this.add.tileSprite(0,0,64,480, 'endgoal').setOrigin(0,0);
+        this.endgoal = this.add.tileSprite(0,0,32,480, 'endgoal').setOrigin(0,0);
         //Rocket sprite
         this.p1Rocket = new Rocket(this, game.config.width/2, 431, 'rocket').setOrigin(0.5, 0);
         //Spaceship creation
         this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'enemyfile', 0, 30).setOrigin(0, 0);
         this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'enemyfile', 0, 20).setOrigin(0,0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'enemyfile', 0, 10).setOrigin(0,0);
+
+        //Music
+        this.backgroundMusic = this.sound.add('bgmusic');
+        var musicConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.backgroundMusic.play(musicConfig);//Starts the music
+        
 
         //green ui background
         this.add.rectangle(0,
@@ -76,15 +93,18 @@ class Play extends Phaser.Scene {
         // 60-second play clock
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+            this.backgroundMusic.stop(musicConfig);
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, '(R) to Restart', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
     }
 
+    //Update Function
     update(){
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+
             this.scene.restart();
         }
 
@@ -110,7 +130,8 @@ class Play extends Phaser.Scene {
             this.shipExplode(this.ship01);
         }
     }
-    //Ship and rocket collision
+
+    //Collision Function
     checkCollision(rocket, ship){
         if (rocket.x < ship.x + ship.width && 
             rocket.x + rocket.width > ship.x && 
@@ -121,7 +142,7 @@ class Play extends Phaser.Scene {
             return false;
         }
     }
-
+    //Explosion Function
     shipExplode(ship) {
         // temporarily hide ship
         ship.alpha = 0;                         
@@ -129,15 +150,15 @@ class Play extends Phaser.Scene {
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');             // play explode animation
         boom.on('animationcomplete', () => {    // callback after ani completes
-        ship.reset();                       // reset ship position
-        ship.alpha = 1;                     // make ship visible again
-        boom.destroy();                     // remove explosion sprite
-    });
+            ship.reset();                       // reset ship position
+            ship.alpha = 1;                     // make ship visible again
+            boom.destroy();                     // remove explosion sprite
+            });
+        // score add and repaint
+        this.p1Score += ship.points;
+        ship.moveSpeed += .05;
+        this.scoreLeft.text = this.p1Score;
+        this.sound.play('sfx_explosion');  
+        }
 
-    // score add and repaint
-    this.p1Score += ship.points;
-    ship.moveSpeed += .05;
-    this.scoreLeft.text = this.p1Score;
-    this.sound.play('sfx_explosion');  
-    }
 }
