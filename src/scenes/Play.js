@@ -41,15 +41,6 @@ class Play extends Phaser.Scene {
         }
         this.backgroundMusic.play(musicConfig);//Starts the music
         
-
-        //green ui background
-        this.add.rectangle(0,
-            borderUISize + borderPadding,
-            game.config.width,
-            borderUISize * 2,
-            0x00FF00,
-        ).setOrigin(0,0);
-
         //Game borders
         //this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
 	    //this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
@@ -66,19 +57,23 @@ class Play extends Phaser.Scene {
         //animation config
         this.anims.create({
             key: 'explode',
-            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0}),
-            frameRate: 15
+            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
+            frameRate: 10
         });
 
         // initialize score
         this.p1Score = 0;
+
+        //Score Background
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xFFFFFF).setOrigin(0,0);
+
         // display score
         let scoreConfig = {
-        fontFamily: 'Courier',
+        fontFamily: 'Consolas',
         fontSize: '28px',
-        backgroundColor: '#F3B141',
-        color: '#843605',
-        align: 'right',
+        backgroundColor: '#000000',
+        color: '#FF0000',
+        align: 'center',
         padding: {
              top: 5,
              bottom: 5,
@@ -87,13 +82,15 @@ class Play extends Phaser.Scene {
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
 
+
+
         // GAME OVER flag
         this.gameOver = false;
 
-        // 60-second play clock
+        //Game timer
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.backgroundMusic.stop(musicConfig);
+            this.backgroundMusic.stop(musicConfig);//Ends music loop on GAME OVER
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, '(R) to Restart', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
@@ -142,6 +139,7 @@ class Play extends Phaser.Scene {
             return false;
         }
     }
+
     //Explosion Function
     shipExplode(ship) {
         // temporarily hide ship
@@ -155,10 +153,18 @@ class Play extends Phaser.Scene {
             boom.destroy();                     // remove explosion sprite
             });
         // score add and repaint
-        this.p1Score += ship.points;
-        ship.moveSpeed += .05;
-        this.scoreLeft.text = this.p1Score;
-        this.sound.play('sfx_explosion');  
+        this.p1Score += ship.points;            //Increase score
+        ship.moveSpeed += .05;                  //Increase destroyed ship speed
+        this.scoreLeft.text = this.p1Score;     //Score text update
+        this.sound.play('sfx_explosion');       //Explosion sfx
+        
+        //Highscore attempt
+        //this.hiScore += this.points;
+        //this.highScoreFunc(this.hiScore);
         }
-
+    
+    highScoreFunc(scoreVar){
+        
+        console.log('High score: '+scoreVar);
+    }
 }
