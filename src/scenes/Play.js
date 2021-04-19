@@ -66,11 +66,6 @@ class Play extends Phaser.Scene {
         }
         this.bgtyping.play(typingConfig);//Starts the typing
         
-        
-
-
-        
-       
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
