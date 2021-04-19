@@ -7,6 +7,7 @@ class Play extends Phaser.Scene {
     //Preloads sprites
     preload(){
         this.load.image('background', 'assets/background.png');
+        this.load.image('frame', 'assets/frame.png');
         this.load.image('endgoal', 'assets/endgoal.png');
         this.load.image('rocket', 'assets/rocket.png');
         this.load.image('enemyfile', 'assets/enemyfile.png');
@@ -48,7 +49,7 @@ class Play extends Phaser.Scene {
         this.bgtyping = this.sound.add('backgroundTyping');
         var typingConfig = {
             mute: false,
-            volume: .5,
+            volume: .75,
             rate: 1,
             detune: 0,
             seek: 0,
@@ -59,11 +60,7 @@ class Play extends Phaser.Scene {
         
         
 
-        //Game borders
-        //this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
-	    //this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFF0000).setOrigin(0 ,0);
-	    //this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFF0000).setOrigin(0 ,0);
-	    //this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFF0000).setOrigin(0 ,0);
+
         
        
         // define keys
@@ -114,6 +111,13 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width/2, game.config.height/2 + 64, '(R) to Restart', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+
+        
+        //Game borders. I have no idea but these cover gaps in my 
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0x404040).setOrigin(0 ,0);
+        this.add.rectangle(0, 0, 2, game.config.height, 0x404040).setOrigin(0 ,0);
+        //Background Frame
+        this.frame = this.add.tileSprite(0,0,640,480, 'frame').setOrigin(0,0);
     }
 
     //Update Function
