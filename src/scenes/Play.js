@@ -13,6 +13,10 @@ class Play extends Phaser.Scene {
         this.load.image('enemyfile', 'assets/enemyfile.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         this.load.image('placeholder', 'assets/placeholder.png');
+        this.load.image('binaryA', 'assets/binaryA.png');
+        this.load.image('binaryB', 'assets/binaryB.png');
+        this.load.image('popup', 'assets/popup.png');
+        this.load.image('gameOver', 'assets/gameOver.png');
 
         this.load.audio('bgmusic', ['assets/bgmusic.wav']);//Background music
         this.load.audio('backgroundTyping', ['assets/backgroundTyping.wav']);
@@ -24,6 +28,9 @@ class Play extends Phaser.Scene {
     create(){
         //Background sprite
         this.background = this.add.tileSprite(0,0,640,480, 'background').setOrigin(0,0);
+        //Binary sprite
+        this.binaryA = this.add.tileSprite(0,0,640,480, 'binaryA').setOrigin(0,0);
+        this.binaryB = this.add.tileSprite(0,0,640,480, 'binaryB').setOrigin(0,0);
         //Endgoal sprite
         this.endgoal = this.add.tileSprite(0,0,32,480, 'endgoal').setOrigin(0,0);
         //Rocket sprite
@@ -37,7 +44,7 @@ class Play extends Phaser.Scene {
         this.backgroundMusic = this.sound.add('bgmusic');
         var musicConfig = {
             mute: false,
-            volume: .5,
+            volume: .15,
             rate: 1,
             detune: 0,
             seek: 0,
@@ -50,7 +57,7 @@ class Play extends Phaser.Scene {
         this.bgtyping = this.sound.add('backgroundTyping');
         var typingConfig = {
             mute: false,
-            volume: .75,
+            volume: .45,
             rate: 1,
             detune: 0,
             seek: 0,
@@ -73,7 +80,7 @@ class Play extends Phaser.Scene {
         //animation config
         this.anims.create({
             key: 'explode',
-            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
+            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 3, first: 0}),
             frameRate: 10
         });
 
@@ -81,14 +88,14 @@ class Play extends Phaser.Scene {
         this.p1Score = 0;
 
         //Score Background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xFFFFFF).setOrigin(0,0);
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xAAAAAA).setOrigin(0,0);
 
         // display score
         let scoreConfig = {
         fontFamily: 'Consolas',
         fontSize: '28px',
-        backgroundColor: '#000000',
-        color: '#FF0000',
+        backgroundColor: '#CCCCCC',
+        color: '#000000',
         align: 'center',
         padding: {
              top: 5,
@@ -106,13 +113,15 @@ class Play extends Phaser.Scene {
         //Game timer
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            //this.placeholder = this.add.tileSprite(0,0,640,480, 'placeholder').setOrigin(0,0);//EndGame Screen
+            this.gameOver = this.add.tileSprite(0,0,640,480, 'gameOver').setOrigin(0,0);//EndGame Screen
+            this.scoreCenter = this.add.text(game.config.width/2, game.config.height/2+50, this.p1Score, scoreConfig);
             this.backgroundMusic.stop(musicConfig);//Ends music loop on GAME OVER
             this.bgtyping.stop(typingConfig);//Ends typing loop
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, '(R) to Restart', scoreConfig).setOrigin(0.5);
+            //this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+            //this.add.text(game.config.width/2, game.config.height/2 + 64, '(R) to Restart', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+
 
         
         //Game borders. I have no idea but these cover gaps in my 
@@ -130,7 +139,11 @@ class Play extends Phaser.Scene {
             this.scene.restart();
         }
 
-        this.background.tilePositionX +=5;
+        //Background Scroll
+        this.background.tilePositionX +=4;
+        this.binaryA.tilePositionX +=5;
+        this.binaryB.tilePositionX +=6;
+
         if (!this.gameOver) {               
             this.p1Rocket.update();         // update rocket sprite
             this.ship01.update();           // update spaceships (x3)
