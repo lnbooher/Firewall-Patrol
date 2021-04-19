@@ -201,9 +201,4 @@ class Play extends Phaser.Scene {
         this.scoreLeft.text = this.p1Score;     //Score text update
         this.sound.play('sfx_explosion');       //Explosion sfx
         }
-    
-    highScoreFunc(scoreVar){
-        
-        console.log('High score: '+scoreVar);
-    }
 }
