@@ -12,6 +12,7 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', 'assets/rocket.png');
         this.load.image('enemyfile', 'assets/enemyfile.png');
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+        this.load.image('placeholder', 'assets/placeholder.png');
 
         this.load.audio('bgmusic', ['assets/bgmusic.wav']);//Background music
         this.load.audio('backgroundTyping', ['assets/backgroundTyping.wav']);
@@ -105,6 +106,7 @@ class Play extends Phaser.Scene {
         //Game timer
         scoreConfig.fixedWidth = 0;
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
+            //this.placeholder = this.add.tileSprite(0,0,640,480, 'placeholder').setOrigin(0,0);//EndGame Screen
             this.backgroundMusic.stop(musicConfig);//Ends music loop on GAME OVER
             this.bgtyping.stop(typingConfig);//Ends typing loop
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
